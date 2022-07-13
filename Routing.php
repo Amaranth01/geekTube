@@ -13,34 +13,33 @@ class Routing
      * @param null $default
      * @return string|null
      */
-    private static function getParam(string $key, $default = null): ?string
+    private static function param(string $key, $default = null): ?string
     {
-        if (isset($_GET[$key])) {
+        if(isset($_GET[$key])) {
             return filter_var($_GET[$key], FILTER_SANITIZE_STRING);
         }
         return $default;
     }
 
     /**
-     * Avoid errors in URL parameters
+     *Avoid errors in URL parameters
      * @param AbstractController $controller
      * @param string|null $action
      * @return string|null
      */
-    private static function method(AbstractController $controller, ?string $action): ?string
+    private static function guessMethod(AbstractController $controller, ?string $action): ?string
     {
-        //Replace spaces with thirds
         if (strpos($action, '-') !== -1) {
-            $action = array_reduce(explode('-', $action), function ($ac, $a){
+            $action = array_reduce(explode('-', $action), function ($ac, $a) {
                 return $ac . ucfirst($a);
             });
         }
 
-        //change uppercase letters to lowercase
         $action = lcfirst($action);
-        if (method_exists($controller, $action)) {
+        if(method_exists($controller, $action)) {
             return $action;
         }
+
         return null;
     }
 
@@ -49,23 +48,27 @@ class Routing
      * @param string $controller
      * @return ErrorController|mixed
      */
-    private static function controller(string $controller)
+    private static function guessController(string $controller)
     {
         $controller = ucfirst($controller) . 'Controller';
         if (class_exists($controller)) {
             return new $controller();
         }
         return new ErrorController();
+
     }
 
+    /**
+     * Brings together all the functions of the router
+     */
     public static function route()
     {
-        //Initialize tne 'c' parameter
-        $paramController = self::getParam('c', 'home');
-        $action = self::getParam('a');
-        $id = self::getParam('id');
-        $token = self::getParam('token');
-        $controller = self::controller($paramController);
+        //Initialize the 'c' parameter
+        $paramController = self::param('c', 'home');
+        $action = self::param('a');
+        $controller = self::guessController($paramController);
+        $id = self::param('id');
+        $token = self::param('token');
 
         //Returns the error page if the controller is not found, and we quit the script
         if($controller instanceof ErrorController) {
@@ -74,7 +77,7 @@ class Routing
         }
 
         //Verification of the presence of controller
-        $action = self::method($controller, $action);
+        $action = self::guessMethod($controller, $action);
         //Checks if a controller id is needed
         if($action !== null) {
             if ($id !== null) {

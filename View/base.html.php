@@ -1,30 +1,43 @@
 <!doctype html>
 <html lang="fr">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>GeekTube</title>
 
-    <link rel="stylesheet" href="/asset/base.css">
-    <link rel="stylesheet" href="/asset/css/menu.css">
 </head>
 <body>
+<?php
 
+if (isset($_SESSION['errors'])) {
+    $errors = $_SESSION['errors'];
+    unset($_SESSION['errors']);
+    ?>
+    <div class="message error">
+        <?= $errors ?>
+    </div> <?php
+}
+
+// Handling success messages.
+if (isset($_SESSION['success'])) {
+    $success = $_SESSION['success'];
+    unset($_SESSION['success']);
+    ?>
+    <div class="message success">
+        <?= $success ?>
+    </div> <?php
+}
+?>
+
+<h1>GeekTube</h1>
 <div>
-    <h1>GeekTube</h1>
-    <form action="">
-        <input type="search" name="search" id="search" placeholder="Rechercher">
-        <button id="searching"><i class="fas fa-search"></i></button>
-    </form>
-</div>
+    <nav id="firstNav">
 
-
-<div>
-    <nav>
-        <ul>
-            <li><a href="/index.php?c=home&a=test">Tous</a></li>
+        <ul class="list">
+            <li><a href="/index.php?c=home&a=index">Tous</a></li>
             <li>RPG</li>
             <li>Action</li>
             <li>FPS</li>
@@ -41,14 +54,14 @@
 
 <footer>
     <p>
-        <a href="" id="privacyPolicy">Politique de confidentialité</a>
+        <a href="/index.php?c=home&a=privacy" id="privacyPolicy">Politique de confidentialité</a>
     </p>
     <p>
-        <a href="" id="privacyPolicy">Mentions légales</a>
+        <a href="/index.php?c=home&a=legal-notice" id="privacyPolicy">Mentions légales</a>
     </p>
 </footer>
 
-</body>
 <script src="https://kit.fontawesome.com/25d98733ec.js"></script>
 
+</body>
 </html>
